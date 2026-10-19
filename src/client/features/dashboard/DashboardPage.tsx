@@ -30,7 +30,25 @@ import {
   getDashboardOverview,
 } from "@/serverFunctions/dashboard";
 import { Skeleton } from "@/client/components/ui/skeleton";
+import { getTargetronLeadsFn } from "@/server/targetron";
 
+async function testTargetronConnection() {
+  console.log("Starting Targetron API test...");
+
+  try {
+    const leads = await getTargetronLeadsFn({
+      data: "Plumbers in Denver CO",
+    });
+
+    console.log("Targetron API response:", leads);
+    console.table(leads);
+
+    alert("Targetron test completed. Check your browser console (F12).");
+  } catch (error) {
+    console.error("Targetron API test failed:", error);
+    alert("Targetron test failed. Check the browser console (F12).");
+  }
+}
 export function DashboardPage({
   projectId,
   tab = "overview",
@@ -181,6 +199,19 @@ export function DashboardPage({
         </div>
 
         <WorkspaceMergeBanner />
+        <div className="rounded-lg border border-blue-500 p-4">
+          <h2 className="mb-2 text-lg font-semibold">
+            Targetron API Connection Test
+          </h2>
+
+          <p className="mb-3 text-sm text-muted-foreground">
+            Test the Targetron API and inspect the business results in the browser console.
+          </p>
+
+          <Button onClick={() => void testTargetronConnection()}>
+            Test Targetron API
+          </Button>
+        </div>
 
         {activationQuery.isError ? (
           <QueryError
