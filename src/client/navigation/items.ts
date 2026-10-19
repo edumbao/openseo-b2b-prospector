@@ -1,3 +1,4 @@
+
 import {
   Bookmark,
   Bot,
@@ -11,6 +12,7 @@ import {
   MessageSquare,
   Search,
   TrendingUp,
+  Users,
 } from "lucide-react";
 import { linkOptions } from "@tanstack/react-router";
 import { GoogleGlyphMuted } from "@/client/features/gsc/GoogleGlyph";
@@ -87,16 +89,29 @@ const projectNavItems = [
   },
 ] as const;
 
-// Project-independent. Rendered inside the project "AI Tools" group when a project
-// is selected, and on its own (connectNavGroup) when none is.
+// Project-independent AI navigation.
 const aiNavItem = linkOptions({
   to: "/ai" as const,
   label: "Agent setup",
   icon: Bot,
 });
 
-// Shown only when no project is selected; with a project, Agent setup lives in
-// the "AI Tools" group below.
+// Project-independent SEO prospecting navigation.
+// This route does not require a projectId.
+const prospectingNavItem = linkOptions({
+  to: "/prospecting" as const,
+  label: "Find Prospects",
+  icon: Users,
+});
+
+// Displayed even when no website project is selected.
+export const prospectingNavGroup = {
+  label: "SEO Prospecting",
+  items: [prospectingNavItem],
+};
+
+// Displayed independently when no project is selected.
+// When a project exists, Agent setup appears in AI Tools.
 export const connectNavGroup = {
   label: "AI Tools",
   items: [aiNavItem],
@@ -112,8 +127,10 @@ function getProjectNavItems(projectId: string) {
   );
 }
 
-// Grouped by scope: "My Site" is the project's own domain (tracked data),
-// "Research" is point-at-anything lookup tools.
+// Grouped by scope:
+// "My Site" contains project-specific tracked data.
+// "Research" contains SEO research tools.
+// "SEO Prospecting" is independent of website projects.
 export function getProjectNavGroups(projectId: string) {
   const all = getProjectNavItems(projectId);
   const byPath = (path: (typeof projectNavItems)[number]["to"]) =>
@@ -149,6 +166,7 @@ export function getProjectNavGroups(projectId: string) {
         byPath("/p/$projectId/audit"),
       ],
     },
+    prospectingNavGroup,
     {
       label: "AI Tools",
       items: [

@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useMatchRoute } from "@tanstack/react-router";
 import type { LinkOptions } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -18,6 +19,7 @@ import { clearLastProjectId } from "@/client/lib/active-project";
 import {
   connectNavGroup,
   getProjectNavGroups,
+  prospectingNavGroup,
 } from "@/client/navigation/items";
 import { ProjectSwitcher } from "@/client/features/projects/ProjectSwitcher";
 import {
@@ -69,6 +71,7 @@ function SidebarNavLink({
 }) {
   const { setOpenMobile } = useSidebar();
   const matchRoute = useMatchRoute();
+
   const isPromptHistory =
     linkProps.to === "/p/$projectId/ai-visibility" &&
     Boolean(
@@ -77,6 +80,7 @@ function SidebarNavLink({
         fuzzy: true,
       }),
     );
+
   const row = (isActive: boolean) => (
     <SidebarMenuButton
       render={<span />}
@@ -88,6 +92,7 @@ function SidebarNavLink({
       <span>{label}</span>
     </SidebarMenuButton>
   );
+
   return (
     <SidebarMenuItem>
       {placeholder ? (
@@ -123,16 +128,20 @@ export function Sidebar({
   /** The session is confirmed, so the sidebar's own data can load. */
   ready: boolean;
 }) {
-  // Until a project is known, show the project nav as rows without links, so
-  // the sidebar has its full shape from the first paint instead of growing
-  // once projects load. The placeholder rows never render these links.
+  // Until a project is known, show the project nav as rows without links.
+  // This preserves the existing sidebar shape during project loading.
   const navPlaceholder = projectId === null && projectPending;
+
+  // SEO Prospecting is independent of website projects.
+  // Display it even when no project is selected.
   const navGroups =
     projectId !== null || navPlaceholder
       ? getProjectNavGroups(projectId ?? "")
-      : [connectNavGroup];
+      : [prospectingNavGroup, connectNavGroup];
+
   const { pathname } = useLocation();
   const { setOpenMobile } = useSidebar();
+
   // SAM is hidden from navigation: the chat route is only reachable by URL,
   // and while it is open its chat list takes the nav's place.
   const onSamRoute = pathname.includes("/sam");
@@ -147,6 +156,7 @@ export function Sidebar({
         >
           OpenSEO
         </Link>
+
         <ProjectSwitcher
           activeProjectId={projectId}
           ready={ready}
@@ -176,17 +186,25 @@ export function Sidebar({
                 <SidebarGroupLabel className="h-7 uppercase tracking-wider text-sidebar-foreground/40">
                   {group.label}
                 </SidebarGroupLabel>
+
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {group.items.map((item) => {
                       const { icon, label, ...linkProps } = item;
+
+                      // Project-independent links stay clickable even
+                      // while the project list is loading.
+                      const isProjectLink =
+                        typeof linkProps.to === "string" &&
+                        linkProps.to.startsWith("/p/$projectId");
+
                       return (
                         <SidebarNavLink
                           key={linkProps.to}
                           icon={icon}
                           label={label}
                           linkProps={linkProps}
-                          placeholder={navPlaceholder}
+                          placeholder={navPlaceholder && isProjectLink}
                         />
                       );
                     })}
@@ -197,6 +215,7 @@ export function Sidebar({
           </nav>
         )}
       </SidebarContent>
+
       <AccountFooter ready={ready} />
     </UiSidebar>
   );
@@ -207,20 +226,25 @@ function AccountFooter({ ready }: { ready: boolean }) {
   const { setOpenMobile } = useSidebar();
   const email = session?.user?.email;
   const [isSwitching, setIsSwitching] = useState(false);
+
   const orgContextQuery = useQuery({
     ...organizationContextQueryOptions(),
     enabled: Boolean(email),
   });
+
   const organizations = orgContextQuery.data?.organizations ?? [];
   const activeOrganizationId = orgContextQuery.data?.organizationId;
 
   async function handleSwitchOrganization(organizationId: string) {
     if (isSwitching || organizationId === activeOrganizationId) return;
+
     setIsSwitching(true);
+
     try {
       await switchOrganization({ data: { organizationId } });
-      // The remembered project belongs to the old workspace; without this,
-      // "/" would open it before the access check bounces back.
+
+      // The remembered project belongs to the old workspace.
+      // Clear it before redirecting to the new organization.
       clearLastProjectId();
       window.location.assign("/");
     } catch (error) {
@@ -237,6 +261,7 @@ function AccountFooter({ ready }: { ready: boolean }) {
           label="Help & Community"
           linkProps={{ to: "/support" }}
         />
+
         {email ? (
           <SidebarMenuItem>
             <DropdownMenu>
@@ -253,6 +278,7 @@ function AccountFooter({ ready }: { ready: boolean }) {
                   {email}
                 </span>
               </DropdownMenuTrigger>
+
               <DropdownMenuContent side="top" className="w-56">
                 {organizations.length > 1 ? (
                   <>
@@ -261,6 +287,7 @@ function AccountFooter({ ready }: { ready: boolean }) {
                         <ArrowLeftRight className="size-3" />
                         Organization
                       </DropdownMenuLabel>
+
                       {organizations.map((organization) => (
                         <DropdownMenuItem
                           key={organization.organizationId}
@@ -274,6 +301,7 @@ function AccountFooter({ ready }: { ready: boolean }) {
                           <span className="truncate">
                             {organization.organizationName}
                           </span>
+
                           {organization.organizationId ===
                           activeOrganizationId ? (
                             <Check className="ml-auto size-4" />
@@ -281,17 +309,23 @@ function AccountFooter({ ready }: { ready: boolean }) {
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuGroup>
+
                     <DropdownMenuSeparator />
                   </>
                 ) : null}
+
                 <DropdownMenuItem
                   render={
-                    <Link to="/settings" onClick={() => setOpenMobile(false)} />
+                    <Link
+                      to="/settings"
+                      onClick={() => setOpenMobile(false)}
+                    />
                   }
                 >
                   <Settings className="size-4" />
                   Settings
                 </DropdownMenuItem>
+
                 <DropdownMenuItem
                   render={
                     <Link
@@ -303,13 +337,16 @@ function AccountFooter({ ready }: { ready: boolean }) {
                   <CreditCard className="size-4" />
                   Billing
                 </DropdownMenuItem>
+
                 <DropdownMenuGroup>
                   <DropdownMenuLabel>Theme</DropdownMenuLabel>
                   <div className="px-1 pb-1">
                     <ThemePreferenceRadio />
                   </div>
                 </DropdownMenuGroup>
+
                 <DropdownMenuSeparator />
+
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => signOutAndRedirect()}

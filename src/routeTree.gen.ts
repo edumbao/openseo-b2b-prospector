@@ -21,6 +21,7 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppAiRouteImport } from './routes/_app/ai'
 import { Route as AppBillingRouteImport } from './routes/_app/billing'
 import { Route as AppProjectsRouteImport } from './routes/_app/projects'
+import { Route as AppProspectingRouteImport } from './routes/_app/prospecting'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppSupportRouteImport } from './routes/_app/support'
 import { Route as AuthSignInRouteImport } from './routes/_auth.sign-in'
@@ -128,6 +129,11 @@ const AppBillingRoute = AppBillingRouteImport.update({
 const AppProjectsRoute = AppProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProspectingRoute = AppProspectingRouteImport.update({
+  id: '/prospecting',
+  path: '/prospecting',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -410,6 +416,7 @@ export interface FileRoutesByFullPath {
   '/ai': typeof AppAiRoute
   '/billing': typeof AppBillingRoute
   '/projects': typeof AppProjectsRoute
+  '/prospecting': typeof AppProspectingRoute
   '/settings': typeof AppSettingsRouteWithChildren
   '/support': typeof AppSupportRoute
   '/sign-in': typeof AuthSignInRoute
@@ -471,6 +478,7 @@ export interface FileRoutesByTo {
   '/ai': typeof AppAiRoute
   '/billing': typeof AppBillingRoute
   '/projects': typeof AppProjectsRoute
+  '/prospecting': typeof AppProspectingRoute
   '/support': typeof AppSupportRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
@@ -530,6 +538,7 @@ export interface FileRoutesById {
   '/_app/ai': typeof AppAiRoute
   '/_app/billing': typeof AppBillingRoute
   '/_app/projects': typeof AppProjectsRoute
+  '/_app/prospecting': typeof AppProspectingRoute
   '/_app/settings': typeof AppSettingsRouteWithChildren
   '/_app/support': typeof AppSupportRoute
   '/_auth/sign-in': typeof AuthSignInRoute
@@ -594,6 +603,7 @@ export interface FileRouteTypes {
     | '/ai'
     | '/billing'
     | '/projects'
+    | '/prospecting'
     | '/settings'
     | '/support'
     | '/sign-in'
@@ -655,6 +665,7 @@ export interface FileRouteTypes {
     | '/ai'
     | '/billing'
     | '/projects'
+    | '/prospecting'
     | '/support'
     | '/sign-in'
     | '/sign-up'
@@ -713,6 +724,7 @@ export interface FileRouteTypes {
     | '/_app/ai'
     | '/_app/billing'
     | '/_app/projects'
+    | '/_app/prospecting'
     | '/_app/settings'
     | '/_app/support'
     | '/_auth/sign-in'
@@ -871,6 +883,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof AppProjectsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/prospecting': {
+      id: '/_app/prospecting'
+      path: '/prospecting'
+      fullPath: '/prospecting'
+      preLoaderRoute: typeof AppProspectingRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/settings': {
@@ -1344,6 +1363,7 @@ interface AppRouteRouteChildren {
   AppAiRoute: typeof AppAiRoute
   AppBillingRoute: typeof AppBillingRoute
   AppProjectsRoute: typeof AppProjectsRoute
+  AppProspectingRoute: typeof AppProspectingRoute
   AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppSupportRoute: typeof AppSupportRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -1357,6 +1377,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppAiRoute: AppAiRoute,
   AppBillingRoute: AppBillingRoute,
   AppProjectsRoute: AppProjectsRoute,
+  AppProspectingRoute: AppProspectingRoute,
   AppSettingsRoute: AppSettingsRouteWithChildren,
   AppSupportRoute: AppSupportRoute,
   AppIndexRoute: AppIndexRoute,
