@@ -93,6 +93,10 @@ pnpm dev
 
 ---
 
-🙏 Acknowledgements
+## 🙏 Acknowledgements
 
 OpenProspect is built as an extended fork of OpenSEO created by Ben Senescu and contributors.
+
+```sh
+# Upstream repository
+[https://github.com/every-app/open-seo](https://github.com/every-app/open-seo)
