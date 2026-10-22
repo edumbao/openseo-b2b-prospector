@@ -1,88 +1,98 @@
-# OpenSEO
+<div align="center">
 
-> Open source alternative to Semrush and Ahrefs
+# 🎯 OpenProspect
 
-OpenSEO is an SEO tool for _the people_. If tools like Semrush or Ahrefs are too expensive or bloated, OpenSEO is a pay-as-you-go alternative that you actually control.
+### The Open-Source Local SEO Audit & B2B Lead Enrichment Engine
 
-> All-in-one SEO tool for you and your AI agent.
+*Turn local search visibility gaps into actionable, enriched B2B outreach pipelines.*
 
-Connect with any agent like Claude Code, OpenClaw or Hermes. We have pre-built skills, but you can build your own to tailor OpenSEO to your needs.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Next.js 15](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
+[![DataForSEO](https://img.shields.io/badge/DataForSEO-PAYG_API-0080FF)](https://dataforseo.com/)
+[![Targetron](https://img.shields.io/badge/Targetron-B2B_Intelligence-FF5722)](https://targetron.com/)
+[![MCP Server](https://img.shields.io/badge/MCP-Ready-8A2BE2)](https://modelcontextprotocol.io/)
 
-<img width="100%" alt="openseo-keyword-research" src="https://github.com/user-attachments/assets/8ebdc439-3e72-41ab-8bde-8cda771ef2e8" />
+[Features](#-key-features) • [Architecture](#-architecture--data-pipeline) • [Environment Setup](#-environment-variables) • [Self-Hosting](#-self-hosting) • [Local Development](#-local-development) • [Acknowledgements](#-acknowledgements)
 
-## Hosted Version
+---
 
-Try OpenSEO for free on our website. If you want to support the project, a hosted subscription is $10/month.
+</div>
 
-[openseo.so](https://openseo.so)
+## 📌 Overview
 
-## Why use OpenSEO?
+**OpenProspect** is a self-hosted, open-source platform that bridges the gap between **Search Engine Visibility** and **B2B Decision-Maker Intelligence**. 
 
-- Best in class MCP and AI Skills.
-- Modern, simple UI.
-  - Focused workflows instead of a bloated, complex SEO suite.
-- No subscriptions.
-  - Bring your own DataForSEO API key and pay only for what you use.
-- Fork and vibe code your own custom tool.
+Forked and expanded from [OpenSEO](https://github.com/every-app/open-seo), OpenProspect combines local rank tracking, SERP gap analysis, and keyword data from **DataForSEO** with real-world Google Maps metadata, verified decision-maker contacts, and company profiles powered by **Targetron**.
 
-## Main SEO Workflows
+Say goodbye to per-location SaaS taxes and rigid prospecting subscriptions. OpenProspect runs entirely on transparent, usage-based pay-as-you-go APIs.
 
-- Keyword research
-- Rank tracking
-- Competitor Insights
-- Backlinks
-- Site Audits
-- AI Visibility
+---
 
-## OpenSEO MCP & Agent Skills
+## 🔥 Key Features
 
-OpenSEO exposes an MCP server so AI agents like Claude Code, OpenClaw, and Hermes can use your SEO data directly. Agent Skills are reusable workflows that guide your agent through SEO tasks using the MCP.
+* 📍 **Hyper-Local SERP & Competitor Audits:** Identify local businesses ranking on page 2 or 3 for high-value commercial intent keywords using DataForSEO's city-level search engine data.
+* 🎛️ **Targetron B2B Enrichment:** Instantly pull decision-maker names, verified direct emails, phone numbers, Google Place IDs, and Google Maps review metrics for any audited domain.
+* 🚀 **Local Programmatic SEO (pSEO) Ready:** Generate structured datasets pairing physical location metadata (lat/long, business hours, GBP attributes) with search volume metrics for programmatic landing pages.
+* 🤖 **AI-Native MCP Integration:** Native Model Context Protocol (MCP) server support allows AI agents (like Claude Code or OpenClaw) to run local competitor audits, score leads, and write personalized outreach copy directly from your terminal.
+* 💰 **Zero Monthly Platform Fees:** Fully open-source under the MIT license. Pay only for the raw API credits you consume through DataForSEO and Targetron.
 
-- [Set up ChatGPT web or desktop](https://openseo.so/docs/chatgpt) (works on Free and paid ChatGPT plans)
-- [Set up Codex](https://openseo.so/docs/codex-plugin)
-- [Set up OpenSEO MCP](https://openseo.so/docs/mcp)
-- [Set up OpenSEO Agent Skills](https://openseo.so/docs/skills/setup)
+---
 
-## Self-Hosting
+## 🏗️ Architecture & Data Pipeline
 
-OpenSEO supports two self-hosting paths:
+```mermaid
+flowchart TD
+    subgraph Data Sources
+        DF[DataForSEO API<br/><i>Search Engine & Local SERP</i>]
+        TG[Targetron API<br/><i>B2B Contacts & Maps Data</i>]
+    end
 
-- **Simple: Docker (Best for testing it out)** - For personal use on your own machine. See [`docs/SELF_HOSTING_DOCKER.md`](./docs/SELF_HOSTING_DOCKER.md).
-  - Unless you already are self-hosting other apps and are confident doing so, we recommend self-hosting with Cloudflare as opposed to Railway, Coolify or Dokploy.
-  - We plan to make it simpler to host on those platforms in the next few months.
-- **Recommended: Cloudflare** - For internet-facing self-hosting across multiple devices or with your team (works on the free plan). See [`docs/SELF_HOSTING_CLOUDFLARE.md`](./docs/SELF_HOSTING_CLOUDFLARE.md).
+    subgraph Core Engine
+        OP[OpenProspect Core<br/><i>Next.js 15 / Supabase</i>]
+    end
 
-Either way, you need a DataForSEO API key to get SEO data. See [`docs/DATAFORSEO_API_KEY.md`](./docs/DATAFORSEO_API_KEY.md).
+    subgraph Applications & Interfaces
+        UI[Local Audit & CRM Dashboard]
+        MCP[MCP Server Agent<br/><i>Claude Code / AI Assistants</i>]
+    end
 
-## Costs
+    DF --> OP
+    TG --> OP
+    OP --> UI
+    OP --> MCP
+```
+## 🤖 OpenProspect MCP & Agent Skills
 
-OpenSEO needs a [DataForSEO](https://dataforseo.com/?aff=255379) API key so that you can get SEO data. You pay them directly when self hosting.
+OpenProspect exposes an extended MCP server so AI agents can query search performance alongside lead enrichment metrics directly from your CLI or agent environment:
 
-See [openseo.so/pricing](https://openseo.so/pricing)
+* **`prospector.search_local_leads`**: Scans DataForSEO for targeted local keywords and flags low-ranking domains.
+* **`prospector.enrich_domain`**: Queries Targetron to retrieve business profiles, Google Place IDs, and decision-maker contact details.
 
-When you self host, your costs will be slightly lower than the estimates on our website. The way the hosted service makes money is by charging 28% extra for every request we make to DataForSEO.
+---
 
-## Local Development
+## 🚀 Self-Hosting
+
+OpenProspect supports two self-hosting paths:
+
+* **Simple: Docker (Best for local testing)**  
+  See [`docs/SELF_HOSTING_DOCKER.md`](./docs/SELF_HOSTING_DOCKER.md).
+* **Recommended: Cloudflare Pages / Workers**  
+  For internet-facing self-hosting across multiple devices or team workflows (works on Cloudflare's free plan). See [`docs/SELF_HOSTING_CLOUDFLARE.md`](./docs/SELF_HOSTING_CLOUDFLARE.md).
+
+---
+
+## 💻 Local Development
 
 See [`docs/LOCAL_DEVELOPMENT.md`](./docs/LOCAL_DEVELOPMENT.md).
 
-## Contributing
-
-Creating clear issues is the best way to contribute.
-
-Read more here: [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md)
-
-We have this skill: `/simple-issue-description` which helps.
-
 ```sh
-npx skills add every-app/open-seo --skill simple-issue-description
-```
+git clone [https://github.com/edumbao/openseo-b2b-prospector.git](https://github.com/edumbao/openseo-b2b-prospector.git)
+cd openseo-b2b-prospector
+pnpm install
+pnpm dev
 
-## Community
+🙏 Acknowledgements
 
-Join Discord to chat: [Discord](https://discord.gg/c9uGs3cFXr)
+OpenProspect is built as an extended fork of OpenSEO created by Ben Senescu and contributors.
 
-Follow along for updates:
-
-- Follow on X: https://x.com/bensenescu
-- Sign up for the mailing list on our website: [openseo.so](https://openseo.so)
+<FollowUp label="Would you like me to write the TypeScript helper module for lib/targetron.ts next?" query="Provide the TypeScript integration module for lib/targetron.ts to connect Targetron API with OpenProspect."/>
