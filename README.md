@@ -86,17 +86,33 @@ OpenProspect supports two self-hosting paths:
 See [`docs/LOCAL_DEVELOPMENT.md`](./docs/LOCAL_DEVELOPMENT.md).
 
 ```sh
-git clone [https://github.com/edumbao/openseo-b2b-prospector.git](https://github.com/edumbao/openseo-b2b-prospector.git)
+git clone https://github.com/edumbao/openseo-b2b-prospector.git
 cd openseo-b2b-prospector
 pnpm install
 pnpm dev
+```
+
+---
+
+## 🤝 Contributing
+
+Creating clear issues is the best way to contribute.
+
+Read more here: [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md)
+
+We have this skill: `/simple-issue-description` which helps.
+
+```sh
+npx skills add edumbao/openseo-b2b-prospector --skill simple-issue-description
+```
 
 ---
 
 ## 🙏 Acknowledgements
 
-OpenProspect is built as an extended fork of OpenSEO created by Ben Senescu and contributors.
+OpenProspect is an extended fork of OpenSEO created by Ben Senescu and contributors.
 
 ```sh
 # Upstream repository
-[https://github.com/every-app/open-seo](https://github.com/every-app/open-seo)
+https://github.com/every-app/open-seo
+```
