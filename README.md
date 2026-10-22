@@ -91,8 +91,8 @@ cd openseo-b2b-prospector
 pnpm install
 pnpm dev
 
+---
+
 🙏 Acknowledgements
 
 OpenProspect is built as an extended fork of OpenSEO created by Ben Senescu and contributors.
-
-<FollowUp label="Would you like me to write the TypeScript helper module for lib/targetron.ts next?" query="Provide the TypeScript integration module for lib/targetron.ts to connect Targetron API with OpenProspect."/>
